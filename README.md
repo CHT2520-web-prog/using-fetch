@@ -1,16 +1,26 @@
 # The `fetch` API
 
-Previously, we looked at a simple JavaScript app that would allow users to browse a list of film by decade.
+Previously, we looked at a simple JavaScript app that would allow users to browse a list of films by decade.
 
 Users selected a decade and a list of films updated.
 
 A major weakness of this app was the data was hard-coded into the app. 
 
-## Externalisng the Data as JSON. 
+- Open your existing codespace (The one we used in the early part of the module) https://github.com/codespaces.
+- In the terminal enter
+```
+git clone https://github.com/CHT2520-web-prog/using-fetch
+```
+- This will copy the contents of this repository into your codespace.
 
-Create a new folder, name 'data'
-Create a new file in this folder, name it 2000.json
-Paste the following JSON data into this file
+- Test the index.html page in a browser. 
+- You should be able to click on a decade and the list of films changes. 
+
+## Externalising the Data as JSON. 
+
+- Create a new folder in the project, name it _'data'_
+- Create a new file in this folder, name it _2000.json_
+- Paste the following JSON data into this file:
 
 ```json
 [
@@ -41,10 +51,9 @@ Paste the following JSON data into this file
     }
 ]
 ```
-Save the file
-
-Create another file in the same folder, name it 2010.json
-Paste in the following JSON data
+- Save the file
+- Create another file in the same folder, name it _2010.json_
+- Paste in the following JSON data into this file. 
 
 ```json
 [
@@ -76,7 +85,7 @@ Paste in the following JSON data
 ]
 ```
 
-In app.js add the following function
+- In app.js add the following function
 
 ```js
 async function getFilms(decade) {
@@ -98,7 +107,7 @@ async function getFilms(decade) {
 }
 ```
 
-Modify the `changeDecade()` function to call `getFilms()` (we have deleted the `if` statement that switched between different arrays.)
+- Modify the `changeDecade()` function to call `getFilms()` (we have deleted the `if` statement that switched between different arrays.)
 
 ```js
 function changeDecade(event) {
@@ -115,28 +124,25 @@ function changeDecade(event) {
     getFilms(decade);
 }
 ```
-Comment out the declaration of the `filmsFrom2000s` and `filmsFrom2010s` arrays
+- Test the page in a browser. 'right-click' on the page, select 'inspect', and select the 'console' tab. In the console, you should be able to view the array of films that has been loaded from a JSON file.
 
-Test the page in a browser.
-In a browser 'right-click' on the page, select 'inspect', and select the 'console' tab.
-In the console, you should be able to view the array of films that has been loaded from a JSON file.
-Click on the decade buttons and see how the results change in the console.
+- Click on the decade buttons and see how the results change in the console.
 
-Still in the browser, select 'Network'
-See how requests are made the .json files. 
+## Using the JSON data
 
-Finally, instead of showing the results in the console, we want them to appear in the page
+- Instead of showing the results in the console, we want them to appear in the page.
 
-In getFilms() change the line
+- In `getFilms()` change the line:
+  
 ```js
 console.log(films);
 ```
-To:
+- To:
 ```js
 return films;
 ```
-In `changeDecade()`  call updateFilmList() with the array of films returned from `getFilms()`.
-changeDecade will then look like the following:-
+- In `changeDecade()`  call `updateFilmList()` and pass in the array of films returned from `getFilms()`.
+- `changeDecade()` will then look like the following:-
 
 ```js
 function changeDecade(event) {
@@ -151,11 +157,12 @@ function changeDecade(event) {
 
     //call getFilms()
     const films = getFilms(decade);
+
     updateFilmList(films);
 }
 ```
 
-Test this in a browser. The app should work as it did before, However, now the data is being loaded from the JSON files.
+- Test this in a browser. The app should work as it did before, However, now the data is being loaded from the JSON files.
 
 ## Using a Laravel back-end
 We have externalised the data, but it is still hard-coded. 
@@ -164,14 +171,14 @@ Even better would be if the JSON data was dynamically generated for us.
 
 Take your existing Laravel films CRUD app
 
-Add a new route immediatly after `Route::get('/films', [FilmController::class, 'index']);`
+Add the following new route, immediately after `Route::get('/films', [FilmController::class, 'index']);`
 
 ```php
 Route::get('/films/browse', [FilmController::class, 'browse']);
 
 ```
 
-In the FilmController add a new method
+- In  `FilmController` add a new `browse` method:
 
 ```php
 public function browse(Request $request)
@@ -187,72 +194,66 @@ public function browse(Request $request)
         return view('films.browse', ['chosenDecade' => $chosenDecade, 'decades' => $decades, 'films' => $films]);
     }
 ```
-This method 
-Takes a decade from the querystring e.g. if the user visits a route such as '/films/browse?decade=2000', `$chosenDecade` will be 2000. 
-Uses Eloquent to query the database for films that match this decade `Film::whereBetween('year', [$startYear, $startYear + 9])->get();`
-Passes the collection of films and a simple array of decades to browse view. 
+- This method 
+    - Takes a decade from the querystring e.g. if the user visits a route such as _/films/browse?decade=2000_, `$chosenDecade` will have a value of 2000. 
+    - Uses Eloquent to query the database for films that match this decade
+    ```php
+    Film::whereBetween('year', [$startYear, $startYear + 9])->get();
+    ```
+    - Passes the collection of films and a simple array of decades to a _browse_ view. 
+    ```php
+    return view('films.browse', ['chosenDecade' => $chosenDecade, 'decades' => $decades, 'films' => $films]);
+    ```
 
-In the resources/views/films folder add a new browse.blade.php view file
+- In the _resources/views/films_ folder add a new _browse.blade.php_ view file.
 
-```html
-<x-layout title="List the films">
+    ```html
+    <x-layout title="List the films">
 
-    <div id="decadeNavHolder">
-            <a class="decade-link" href="/films/browse?decade=2000">2000</a>
-            <a class="decade-link" href="/films/browse?decade=2010">2010</a>
-    </div>
+        <div id="decade-nav-holder">
+        @foreach ($decades as $decade)
+            @if ($chosenDecade === $decade)
+                {{$decade}}
+            @else
+                <a href="/films/browse?decade={{$decade}}" class="decade-link">{{$decade}}</a>
+            @endif
+        @endforeach
 
-    @foreach ($decades as $decade)
-        @if ($chosenDecade === $decade)
-            {{$decade}}
-        @else
-            <a href="/films/browse?decade={{$decade}}">{{$decade}}</a>
-        @endif
-    @endforeach
+            <h1 id="films-heading">Here's a list of films from the {{$chosenDecade}}s</h1>
+            <div id="film-list-holder">
+                @forelse ($films as $film)
+                    <p>
+                        <a href="/films/{{$film->id}}">
+                            {{$film->title}}
+                        </a>
+                    </p>
+                @empty
+                    <p>No films found for the {{ $chosenDecade }}s.</p>
+                @endforelse
+            </div>
+    </x-layout>
+    ```
 
-        <h1 id="films-heading">Here's a list of films from the {{$chosenDecade}}s</h1>
-        <div id="film-list-holder">
-            @forelse ($films as $film)
-                <p>
-                    <a href="/films/{{$film->id}}">
-                        {{$film->title}}
-                    </a>
-                </p>
-            @empty
-                <p>No films found for the {{ $chosenDecade }}s.</p>
-            @endforelse
-        </div>
-</x-layout>
-```
+- Test this works. Enter a route of _films/browse_, a list of films from the 1970s should be displayed. 
+- Click on a different decade and the list of films should update.
 
-Test this works. Enter a route of films/browse, a list of films form the 970s should be displayed. 
-Click on the various navigation options to select different decades.
 
-This browse functionality is pure PHP, we haven't used any JavaScript yet.
+This browse functionality is pure PHP, we haven't used any JavaScript.
 
-We will follow the principle of progressive enhancement. 
+We are following the principle of progressive enhancement i.e. building a web application with a basic, functional experience using HTML first, then enhancing JavaScript to provide richer functionality.
 
-Progressive enhancement is a web development approach in which a web application is built with a basic, functional experience using HTML first, then enhanced JavaScript to provide richer functionality.
-
-The reason we do this is to
-
-Prioritise core functionality: Ensure essential content and functionality work before adding enhancements.
-Improve accessibility: Build on semantic HTML that assistive technologies can understand.
-Improve resilience: Ensure content remains accessible if JavaScript fails, is blocked, or doesn't load correctly.
-Improve performance: Avoid unnecessarily relying on JavaScript for functionality that HTML and CSS can provide.
 
 ## Integrating with JavaScript
 
 We will add a new route that will return JSON data that can be used by the JavaScript. 
 
-Add the new route in web.php
+Add the new route in web.php (immediately after the route we just added).
+
 ```php
-Route::get('/films/browse', [FilmController::class, 'browse']);
+Route::get('/films/browse/{decade}', [FilmController::class, 'browseByDecade']);
 ```
 
-Add it immediately after the route we just added. 
-
-Add another new method to filmController
+- Add another new method to `FilmController`
 
 ```php
     public function browseByDecade(int $decade)
@@ -265,19 +266,17 @@ Add another new method to filmController
         return response()->json($films);
     }
 ```
-This method accepts a query parameter e.g. for the route of `/films/browse/2010`, `$decade` will have a value of 2010. 
-Uses Eloquent to query the database for films that match this decade `Film::whereBetween('year', [$startYear, $startYear + 9])->get();`
+This method:
+- Accepts a query parameter e.g. for the route of `/films/browse/2010`, `$decade` will have a value of 2010. 
+- Uses Eloquent to query the database for films that match this decade `Film::whereBetween('year', [$startYear, $startYear + 9])->get();`
 Sends the data back as JSON. 
 
-test this in a browser. Enter a URL e.g. films/browse/1970 and you should see JSON data of films for the selected decade
+Test this in a browser. Enter a URL e.g. films/browse/1970 and you should see JSON data of films for the selected decade
 
 
 
-Take the app.js file we were working on earlier and drop this into the public/js folder
-
-Modify app.js to call a Laravel route instead of a simpel.json file
-
-replace the line
+- Take the app.js file we were working on earlier and drop this into Laravel's _public/js_ folder
+- Modify _app.js_ to call a Laravel route instead of using a simple .json file. Replace the line
 ```js
 const url = `./data/${decade}.json`;
 ```
@@ -286,18 +285,18 @@ with the line
 const url = `/films/browse/${decade}`;
 ```
 
-Open the browse.view.php file and add a link to the JavaScript file before the closing `</x-layout>` tag. 
+- Open the _browse.view.php_ file and add a link to the JavaScript file before the closing `</x-layout>` tag. 
 
-```
+```html
  <script src="{{asset('js/app.js')}}"></script>
 ```
 
-Test the app in the browser. 
-Use the developer tools
-Make sure you understand how this is working
-When the user first clicks browse the browser method is called and the browse HTML page is generated and returned
-Then when the user clicks on one of the decade links, a fetch() request is made, browserByDecade is called  and Laravel return JSON data that JavaScript uses to change the contents of the page.
+- Test the app in the browser. 
 
-Note we only had to change one line of code in JavaScript to get this to work with a laravel back-end. 
+Make sure you understand how this is working:
+- When the user first visits _/films/browse/_ the `browse()` method is called and the browse HTML page is generated and returned.
+- Then, when the user clicks on one of the decade links, a `fetch()` request is made, `browseByDecade()` is called  and Laravel return JSON data that JavaScript uses to change the contents of the page.
 
-preventDefault. 
+## Test Your Understanding
+- In the layout file, add a link to the browse page. Users then have two different ways of selecting films, a search and browsing. 
+- We have hard-coded the list of decades in the `browse()` method. How can we generate this list of decades from the database. 
