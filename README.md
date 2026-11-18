@@ -91,7 +91,7 @@ git clone https://github.com/CHT2520-web-prog/using-fetch
 
 ```js
 async function getFilms(decade) {
-  const url = "./data/" + decade + ".json";
+  const url = `./data/${decade}.json`;
 
   try {
     const response = await fetch(url);
