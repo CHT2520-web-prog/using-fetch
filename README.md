@@ -15,8 +15,8 @@ git clone https://github.com/CHT2520-web-prog/using-fetch
 ```
 - This will copy the contents of this repository into your codespace.
 
-- Test the index.html page in a browser. 
-- You should be able to click on a decade and the list of films changes. 
+- Test the _index.html_ page in a browser. 
+- This a completed version of the practical from earlier this week. You should be able to click on a decade and the list of films changes. 
 
 ## Externalising the Data as JSON. 
 
