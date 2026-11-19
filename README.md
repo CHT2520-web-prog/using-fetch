@@ -92,7 +92,6 @@ git clone https://github.com/CHT2520-web-prog/using-fetch
 ```js
 async function getFilms(decade) {
   const url = `./data/${decade}.json`;
-
   try {
     const response = await fetch(url);
     if (!response.ok) {
@@ -101,7 +100,7 @@ async function getFilms(decade) {
     const films = await response.json();
     console.log(films);
   } catch (error) {
-        console.error(error.message);
+    console.error(error.message);
   }
 }
 ```
@@ -112,13 +111,10 @@ async function getFilms(decade) {
 function changeDecade(event) {
     // Stop the default link action
     event.preventDefault();
-
     // Get the text inside the selected link
     const decade = event.currentTarget.textContent;
-    
     // Change the <h1> element
     updateFilmsHeading(decade);
-
     //call getFilms()
     getFilms(decade);
 }
@@ -143,10 +139,10 @@ console.log(films);
 return films;
 ```
 - In `changeDecade()`:
-  - Declare the function as being `async`. This tells JavaScript this is an asynchronous function. 
+  - Declare the function as being `async`. This tells JavaScript this is a function that uses asynchronous code. 
   - Assign the films returned from `getFilms()` to a variable. Note, we use `await` as `getFilms()` returns a Promise. 
     ```js
-        const films = await getFilms(decade);
+    const films = await getFilms(decade);
     ```
   - call `updateFilmList()` to display the films in the page.
 - `changeDecade()` will then look like the following:
@@ -155,16 +151,12 @@ return films;
 async function changeDecade(event) {
     // Stop the default link action
     event.preventDefault();
-
     // Get the text inside the selected link
     const decade = event.currentTarget.textContent;
-    
     // Change the <h1> element
     updateFilmsHeading(decade);
-
     //call getFilms()
     const films = await getFilms(decade);
-
     updateFilmList(films);
 }
 ```
