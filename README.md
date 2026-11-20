@@ -182,10 +182,7 @@ Route::get('/films/browse', [FilmController::class, 'browse']);
 ```php
 public function browse(Request $request)
 {
-    $chosenDecade = (int) $request->query('decade');
-    if ($chosenDecade == null) {
-        $chosenDecade = 1970;
-    }
+    $chosenDecade = (int) $request->query('decade', 1970);
     $startYear = $chosenDecade;
     $films = Film::whereBetween('year', [$startYear, $startYear + 9])->get();
 
@@ -266,7 +263,7 @@ public function browseByDecade(int $decade)
 }
 ```
 This method:
-- Accepts a query parameter e.g. for the route of `/films/browse/2010`, `$decade` will have a value of 2010. 
+- Accepts a route parameter e.g. for the route of `/films/browse/2010`, `$decade` will have a value of 2010. 
 - Uses Eloquent to query the database for films that match this decade `Film::whereBetween('year', [$startYear, $startYear + 9])->get();`
 Sends the data back as JSON. 
 
@@ -283,7 +280,7 @@ with the line
 const url = `/films/browse/${decade}`;
 ```
 
-- Open the _browse.view.php_ file and add a link to the JavaScript file before the closing `</x-layout>` tag. 
+- Open the _browse.blade.php_ file and add a link to the JavaScript file before the closing `</x-layout>` tag. 
 
 ```html
  <script src="{{asset('js/app.js')}}"></script>
