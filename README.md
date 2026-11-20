@@ -87,7 +87,7 @@ git clone https://github.com/CHT2520-web-prog/using-fetch
 ]
 ```
 
-- In app.js add the following function at the very top of the file. See the lecture slides for an explanation of `fetch` and asynchronous JavaScript. 
+- In _app.js_ add the following function at the very top of the file. See the lecture slides for an explanation of `fetch` and asynchronous JavaScript. 
 
 ```js
 async function getFilms(decade) {
@@ -123,7 +123,7 @@ function changeDecade(event) {
 
 - Click on the decade buttons and see how the results change in the console.
 
-- Now we have externalised the data, comment out or delete the arrays of films in _app.js_.
+- Now we have externalised the data, comment out or delete the film arrays in _app.js_.
 
 ## Using the JSON data
 
