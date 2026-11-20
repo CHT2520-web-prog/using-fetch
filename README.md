@@ -239,7 +239,7 @@ In the _resources/views/films_ folder add a new _browse.blade.php_ view file.
 
 This browse functionality is pure PHP, we **haven't** used any JavaScript.
 
-We are following the principle of progressive enhancement i.e. building a web application with a basic, functional experience using HTML first, then enhancing JavaScript to provide richer functionality.
+We are following the principle of progressive enhancement i.e. building a web application with a basic, functional experience using HTML first, then enhancing with JavaScript to provide richer functionality.
 
 
 ## Integrating with JavaScript
